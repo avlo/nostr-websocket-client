@@ -4,12 +4,12 @@ import reactor.core.publisher.Mono;
 
 public class ClientLogic {
 
-  public void doLogic(Client client, String message) {
+  public void doLogic(WebSocketService webSocketService, String message) {
     Mono
         .fromRunnable(
-            () -> client.send(message)
+            () -> webSocketService.send(message)
         )
-        .thenMany(client.receive())
+        .thenMany(webSocketService.receive())
         .doOnNext(
             System.out::println
         )

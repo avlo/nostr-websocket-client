@@ -18,17 +18,17 @@ public abstract class AbstractClientComponent {
 
   private final ConfigurableApplicationContext applicationContext;
   private final WebSocketClient eventWebSocketClient;
-  private final Client client;
+  private final WebSocketService webSocketService;
 
   AbstractClientComponent(ConfigurableApplicationContext applicationContext) {
     this.applicationContext = applicationContext;
     this.eventWebSocketClient = new ReactorNettyWebSocketClient();
-    this.client = new Client();
+    this.webSocketService = new WebSocketService();
   }
 
   void doStuff(String json, String subscriptionId) {
-    client.connect(eventWebSocketClient, getURI());
-    new ClientLogic().doLogic(client, json);
+    webSocketService.connect(eventWebSocketClient, getURI());
+    new ClientLogic().doLogic(webSocketService, json);
 
     Mono
         .delay(Duration.ofSeconds(1))
@@ -40,12 +40,12 @@ public abstract class AbstractClientComponent {
   }
 
   private void closeMethodForce() {
-    client.disconnect();
+    webSocketService.disconnect();
     SpringApplication.exit(applicationContext, () -> 0);
   }
 
   private void closeMethodNostr(String subscriptionId) {
-    new ClientLogic().doLogic(client, "[\"CLOSE\",\"" + subscriptionId + "\"]");
+    new ClientLogic().doLogic(webSocketService, "[\"CLOSE\",\"" + subscriptionId + "\"]");
   }
 
   private URI getURI() {
