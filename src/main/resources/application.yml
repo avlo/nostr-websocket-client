@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: sample-webflux-websocket-netty
+  main:
+    banner-mode: "OFF"
+
+logging:
+  level:
+    root: INFO
+  file:
+    name: log/sample-webflux-websocket-netty.log
+
+relayUrl: ws://localhost:5555
