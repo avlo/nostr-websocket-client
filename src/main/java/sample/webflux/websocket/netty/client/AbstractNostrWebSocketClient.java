@@ -1,10 +1,8 @@
 package sample.webflux.websocket.netty.client;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
-import org.springframework.web.reactive.socket.client.WebSocketClient;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -12,24 +10,37 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.Duration;
 
-public abstract class AbstractClientComponent {
-  @Value("${relayUrl}")
-  String relayUrl;
+public abstract class AbstractNostrWebSocketClient {
+  private final String relayUrl;
 
   private final ConfigurableApplicationContext applicationContext;
-  private final WebSocketClient eventWebSocketClient;
-  private final WebSocketService webSocketService;
+  private final WebSocketHandler webSocketHandler;
 
-  AbstractClientComponent(ConfigurableApplicationContext applicationContext) {
+  AbstractNostrWebSocketClient(ConfigurableApplicationContext applicationContext, String relayUrl) {
     this.applicationContext = applicationContext;
-    this.eventWebSocketClient = new ReactorNettyWebSocketClient();
-    this.webSocketService = new WebSocketService();
+    this.relayUrl = relayUrl;
+    this.webSocketHandler = new WebSocketHandler();
+    this.webSocketHandler.connect(new ReactorNettyWebSocketClient(), getURI());
   }
 
-  void doStuff(String json, String subscriptionId) {
-    webSocketService.connect(eventWebSocketClient, getURI());
-    new ClientLogic().doLogic(webSocketService, json);
+  void sendRequestMessage(String json, String subscriptionId) {
+    sendMessage(json);
+    countdownClose();
+  }
 
+  public void sendMessage(String message) {
+    Mono
+        .fromRunnable(
+            () -> webSocketHandler.send(message)
+        )
+        .thenMany(webSocketHandler.receive())
+        .doOnNext(
+            System.out::println
+        )
+        .subscribe();
+  }
+
+  private void countdownClose() {
     Mono
         .delay(Duration.ofSeconds(1))
         .publishOn(Schedulers.boundedElastic())
@@ -40,12 +51,12 @@ public abstract class AbstractClientComponent {
   }
 
   private void closeMethodForce() {
-    webSocketService.disconnect();
+    webSocketHandler.disconnect();
     SpringApplication.exit(applicationContext, () -> 0);
   }
 
   private void closeMethodNostr(String subscriptionId) {
-    new ClientLogic().doLogic(webSocketService, "[\"CLOSE\",\"" + subscriptionId + "\"]");
+    sendMessage("[\"CLOSE\",\"" + subscriptionId + "\"]");
   }
 
   private URI getURI() {

@@ -13,7 +13,7 @@ import reactor.core.publisher.Sinks;
 import java.net.URI;
 import java.util.Optional;
 
-public class WebSocketService {
+public class WebSocketHandler {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 

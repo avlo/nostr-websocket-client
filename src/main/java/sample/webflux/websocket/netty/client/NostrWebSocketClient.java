@@ -1,13 +1,14 @@
 package sample.webflux.websocket.netty.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ReqClientComponent extends AbstractClientComponent implements ApplicationListener<ApplicationReadyEvent> {
+public class NostrWebSocketClient extends AbstractNostrWebSocketClient implements ApplicationListener<ApplicationReadyEvent> {
 
 //  default id: 8f66a36101d3d152c6270e18f5622d1f8bce4ac5da9ab62d7c3cc0006e5914cc
 //  default pubkey: bbbd79f81439ff794cf5ac5f7bff9121e257f399829e472c7a14d3e86fe76984
@@ -26,15 +27,15 @@ public class ReqClientComponent extends AbstractClientComponent implements Appli
   private static final String none = "[\"REQ\",\"" + REQ_CLIENT_COMPONENT_NONE_001 + "\",{}]";
 
   @Autowired
-  public ReqClientComponent(ConfigurableApplicationContext applicationContext) {
-    super(applicationContext);
+  public NostrWebSocketClient(ConfigurableApplicationContext applicationContext, @Value("${relayUrl}") String relayUrl) {
+    super(applicationContext, relayUrl);
   }
 
   @Override
   public void onApplicationEvent(ApplicationReadyEvent event) {
-    doStuff(idReqJson, REQ_CLIENT_COMPONENT_ID_001);
-//    doStuff(authorReqJson, REQ_CLIENT_COMPONENT_AUTHOR_001);
-//    doStuff(bothReqJson, REQ_CLIENT_COMPONENT_ID_AUTHOR_001);
-//    doStuff(none, REQ_CLIENT_COMPONENT_NONE_001);
+//    sendRequestMessage(idReqJson, REQ_CLIENT_COMPONENT_ID_001);
+//    sendRequestMessage(authorReqJson, REQ_CLIENT_COMPONENT_AUTHOR_001);
+    sendRequestMessage(bothReqJson, REQ_CLIENT_COMPONENT_ID_AUTHOR_001);
+//    sendRequestMessage(none, REQ_CLIENT_COMPONENT_NONE_001);
   }
 }

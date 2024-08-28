@@ -1,5 +1,6 @@
 package sample.webflux.websocket.netty.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -11,12 +12,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 //@Component
-public class EventClientComponent extends AbstractClientComponent implements ApplicationListener<ApplicationReadyEvent> {
+public class EventNostrWebSocketClient extends AbstractNostrWebSocketClient implements ApplicationListener<ApplicationReadyEvent> {
   String eventJson;
 
   //  @Autowired
-  public EventClientComponent(ConfigurableApplicationContext applicationContext) {
-    super(applicationContext);
+  public EventNostrWebSocketClient(ConfigurableApplicationContext applicationContext, @Value("${relayUrl}") String relayUrl) {
+    super(applicationContext, relayUrl);
     try (Stream<String> lines = Files.lines(Paths.get("src/main/resources/text_event_json_input.txt"))) {
       this.eventJson = lines.collect(Collectors.joining("\n"));
     } catch (IOException e) {
@@ -26,6 +27,6 @@ public class EventClientComponent extends AbstractClientComponent implements App
 
   @Override
   public void onApplicationEvent(ApplicationReadyEvent event) {
-    doStuff(eventJson, "EventClientComponent-999");
+    sendRequestMessage(eventJson, "EventClientComponent-999");
   }
 }
