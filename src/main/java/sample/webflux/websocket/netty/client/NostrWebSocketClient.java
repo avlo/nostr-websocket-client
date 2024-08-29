@@ -34,6 +34,12 @@ public class NostrWebSocketClient extends AbstractNostrWebSocketClient implement
   private static final String REQ_CLIENT_AUTHOR_004 = "cccd79f81439ff794cf5ac5f7bff9121e257f399829e472c7a14d3e86fe76984";
   private static final String multipleIdJson = "[\"REQ\",\"" + REQ_CLIENT_SUBSCRIBER_004 + "\",{\"ids\":[\"" + REQ_CLIENT_EVENT_ID_004_a + "\",\"" + REQ_CLIENT_EVENT_ID_004_b + "\"],\"authors\":[\"" + REQ_CLIENT_AUTHOR_004 + "\"]}]";
 
+  private static final String REQ_CLIENT_SUBSCRIBER_005 = "ReqClientComponent-OVERLAP-005";
+  private static final String REQ_CLIENT_EVENT_ID_005_a = "b308ee86a086ff9d7435197c8d0d92412d141653e79535e2805cf15617a699d6";
+  private static final String REQ_CLIENT_EVENT_ID_005_b = "e69b40aa10f4ac9cc654f25f564b2ea6e6d73bc9a88848e80c0a82cfaf73f06a";
+  private static final String REQ_CLIENT_AUTHOR_005 = "bbbd79f81439ff794cf5ac5f7bff9121e257f399829e472c7a14d3e86fe76984";
+  private static final String overlappingIdJson = "[\"REQ\",\"" + REQ_CLIENT_SUBSCRIBER_005 + "\",{\"ids\":[\"" + REQ_CLIENT_EVENT_ID_005_a + "\",\"" + REQ_CLIENT_EVENT_ID_005_b + "\"],\"authors\":[\"" + REQ_CLIENT_AUTHOR_005 + "\"]}]";
+
   private static final String REQ_CLIENT_SUBSCRIBER_999 = "ReqClientComponent-NONE-001";
   private static final String none = "[\"REQ\",\"" + REQ_CLIENT_SUBSCRIBER_999 + "\",{}]";
 
@@ -47,7 +53,9 @@ public class NostrWebSocketClient extends AbstractNostrWebSocketClient implement
 //    sendRequestMessage(idReqJson, REQ_CLIENT_SUBSCRIBER_001);
 //    sendRequestMessage(authorReqJson, REQ_CLIENT_SUBSCRIBER_002);
 //    sendRequestMessage(bothReqJson, REQ_CLIENT_SUBSCRIBER_003);
-    sendRequestMessage(multipleIdJson, REQ_CLIENT_SUBSCRIBER_004);
-//    sendRequestMessage(none, REQ_CLIENT_COMPONENT_NONE_001);
+//    sendRequestMessage(multipleIdJson, REQ_CLIENT_SUBSCRIBER_004);
+    sendRequestMessage(overlappingIdJson, REQ_CLIENT_SUBSCRIBER_005);
+//    sendRequestMessage(none, REQ_CLIENT_SUBSCRIBER_999);
   }
 }
+
