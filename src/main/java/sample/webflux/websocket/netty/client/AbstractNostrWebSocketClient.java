@@ -1,5 +1,7 @@
 package sample.webflux.websocket.netty.client;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.reactive.socket.client.ReactorNettyWebSocketClient;
@@ -11,6 +13,7 @@ import java.net.URISyntaxException;
 import java.time.Duration;
 
 public abstract class AbstractNostrWebSocketClient {
+  private final Logger logger = LoggerFactory.getLogger(getClass());
   private final String relayUrl;
 
   private final ConfigurableApplicationContext applicationContext;
@@ -24,6 +27,11 @@ public abstract class AbstractNostrWebSocketClient {
   }
 
   void sendRequestMessage(String json, String subscriptionId) {
+    logger.info("++++++++++++");
+    logger.info("++++++++++++");
+    logger.info(json);
+    logger.info("++++++++++++");
+    logger.info("++++++++++++");
     sendMessage(json);
     countdownClose();
   }
